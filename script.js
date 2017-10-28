@@ -188,7 +188,16 @@ var onDragStart = function (source, piece, position, orientation) {
         return false;
     }
 };
-
+var checkmate = function(game) {
+    if(game.in_checkmate())
+    { 
+        log('checkmate');
+        return 'checkmate';
+    }else{
+        log('stalemate');
+        return 'stalemate';
+    }
+};
 var whiteMove = function () {
     //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
     var bestMove = randomMove(game);
@@ -196,22 +205,24 @@ var whiteMove = function () {
     board.position(game.fen());
     renderMoveHistory(game.history());
     if (game.game_over()) {
-        alert('Game over');
+        alert('Game over ['+checkmate(game)+']');
+        return;
     }
-    window.setTimeout(blackMove, 500);
+    window.setTimeout(blackMove, 5);
 };
 
 var blackMove = function () {
     //var bestMove = getBestMove(game, blackDepth, minimaxRoot);
-    //var bestMove = randomMove(game);
-    var bestMove = randomCapture(game);
+    var bestMove = randomMove(game);
+    //var bestMove = randomCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
     if (game.game_over()) {
-        alert('Game over');
+        alert('Game over ['+checkmate(game)+']');
+        return;
     }
-    window.setTimeout(whiteMove, 500);
+    window.setTimeout(whiteMove, 5);
 };
 
 var randomMove =function(game) {
@@ -222,7 +233,8 @@ var randomMove =function(game) {
 
 var randomCapture = function(game){
     var possibleMoves = game.ugly_moves();
-    var nextMove = possibleMoves[0]; 
+    //var nextMove = possibleMoves[0]; 
+    var nextMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
     for(var i = 0; i < possibleMoves.length; i++) {
         var move = possibleMoves[i];
         var numPieces = countPieces(game.board());
@@ -258,6 +270,7 @@ var positionCount;
 var getBestMove = function (game, depth, findBestMove) {
     if (game.game_over()) {
         alert('Game over');
+        return;
     }
 
     positionCount = 0;
@@ -284,7 +297,12 @@ var renderMoveHistory = function (moves) {
     historyElement.scrollTop(historyElement[0].scrollHeight);
 
 };
+var log = function (text) {
+    var historyElement = $('#move-history');
+    historyElement.append('<span>' + text + ' </span><br>');
+    historyElement.scrollTop(historyElement[0].scrollHeight);
 
+};
 var onDrop = function (source, target) {
 
     // Removing to make both sides fully CPU, not first move as human
