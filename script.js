@@ -59,6 +59,7 @@ var minimax = function (depth, game, alpha, beta, isMaximisingPlayer) {
     }
 };
 
+    
 var evaluateBoard = function (board) {
     var totalEvaluation = 0;
     for (var i = 0; i < 8; i++) {
@@ -189,7 +190,7 @@ var onDragStart = function (source, piece, position, orientation) {
 };
 
 var whiteMove = function () {
-    //var bestMove = getBestMove(game, whiteDepth);
+    //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
     var bestMove = randomMove(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
@@ -197,19 +198,20 @@ var whiteMove = function () {
     if (game.game_over()) {
         alert('Game over');
     }
-    window.setTimeout(blackMove, 5);
+    window.setTimeout(blackMove, 500);
 };
 
 var blackMove = function () {
-//    var bestMove = getBestMove(game, blackDepth);
-    var bestMove = randomMove(game);
+    //var bestMove = getBestMove(game, blackDepth, minimaxRoot);
+    //var bestMove = randomMove(game);
+    var bestMove = randomCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
     if (game.game_over()) {
         alert('Game over');
     }
-    window.setTimeout(whiteMove, 5);
+    window.setTimeout(whiteMove, 500);
 };
 
 var randomMove =function(game) {
@@ -218,8 +220,42 @@ var randomMove =function(game) {
     return newGameMoves[Math.floor(Math.random() * newGameMoves.length)];
 };
 
+var randomCapture = function(game){
+    var possibleMoves = game.ugly_moves();
+    var nextMove = possibleMoves[0]; 
+    for(var i = 0; i < possibleMoves.length; i++) {
+        var move = possibleMoves[i];
+        var numPieces = countPieces(game.board());
+
+        game.ugly_move(move);
+        if(numPieces > countPieces(game.board()))
+        {
+            nextMove = move;
+        }
+        game.undo();
+    }
+    return nextMove;
+};
+
+var countPieces = function(board){
+    if(board === null){
+        return 0
+    }
+    var pieces = 0;
+
+    for (var i = 0; i < 8; i++) {
+        for (var j = 0; j < 8; j++) {
+            if(board[i][j] !== null)
+            {
+                pieces++;
+            }
+        }
+    }
+    return pieces;
+}
+
 var positionCount;
-var getBestMove = function (game, depth) {
+var getBestMove = function (game, depth, findBestMove) {
     if (game.game_over()) {
         alert('Game over');
     }
@@ -228,7 +264,7 @@ var getBestMove = function (game, depth) {
     //var depth = parseInt($('#search-depth').find(':selected').text());
 
     var d = new Date().getTime();
-    var bestMove = minimaxRoot(depth, game, true);
+    var bestMove = findBestMove(depth, game, true);
     var d2 = new Date().getTime();
     var moveTime = (d2 - d);
     var positionsPerS = ( positionCount * 1000 / moveTime);
