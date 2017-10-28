@@ -186,7 +186,7 @@ var onDragStart = function (source, piece, position, orientation) {
     }
 };
 
-var makeBestMove = function () {
+var playerTwoMove = function () {
     var bestMove = getBestMove(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
@@ -194,7 +194,18 @@ var makeBestMove = function () {
     if (game.game_over()) {
         alert('Game over');
     }
-    window.setTimeout(makeBestMove, 50);
+    window.setTimeout(playerOneMove, 50);
+};
+
+var playerOneMove = function () {
+    var bestMove = getBestMove(game);
+    game.ugly_move(bestMove);
+    board.position(game.fen());
+    renderMoveHistory(game.history());
+    if (game.game_over()) {
+        alert('Game over');
+    }
+    window.setTimeout(playerTwoMove, 50);
 };
 
 
@@ -231,19 +242,20 @@ var renderMoveHistory = function (moves) {
 
 var onDrop = function (source, target) {
 
-    var move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q'
-    });
+    // Removing to make both sides fully CPU, not first move as human
+    // var move = game.move({
+    //     from: source,
+    //     to: target,
+    //     promotion: 'q'
+    // });
 
     removeGreySquares();
-    if (move === null) {
-        return 'snapback';
-    }
+    // if (move === null) {
+    //     return 'snapback';
+    // }
 
     renderMoveHistory(game.history());
-    window.setTimeout(makeBestMove, 250);
+    window.setTimeout(playerTwoMove, 1000);
 };
 
 var onSnapEnd = function () {
