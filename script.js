@@ -194,6 +194,7 @@ var makeBestMove = function () {
     if (game.game_over()) {
         alert('Game over');
     }
+    window.setTimeout(makeBestMove, 50);
 };
 
 
