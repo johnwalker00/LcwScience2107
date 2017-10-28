@@ -1,5 +1,7 @@
 var board,
-    game = new Chess();
+    game = new Chess(), 
+    whiteDepth = 3, 
+    blackDepth = 1;
 
 /*The "AI" part starts here */
 
@@ -186,37 +188,44 @@ var onDragStart = function (source, piece, position, orientation) {
     }
 };
 
-var playerTwoMove = function () {
-    var bestMove = getBestMove(game);
+var whiteMove = function () {
+    //var bestMove = getBestMove(game, whiteDepth);
+    var bestMove = randomMove(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
     if (game.game_over()) {
         alert('Game over');
     }
-    window.setTimeout(playerOneMove, 50);
+    window.setTimeout(blackMove, 5);
 };
 
-var playerOneMove = function () {
-    var bestMove = getBestMove(game);
+var blackMove = function () {
+//    var bestMove = getBestMove(game, blackDepth);
+    var bestMove = randomMove(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
     if (game.game_over()) {
         alert('Game over');
     }
-    window.setTimeout(playerTwoMove, 50);
+    window.setTimeout(whiteMove, 5);
 };
 
+var randomMove =function(game) {
+    //generate all the moves for a given position
+    var newGameMoves = game.ugly_moves();
+    return newGameMoves[Math.floor(Math.random() * newGameMoves.length)];
+};
 
 var positionCount;
-var getBestMove = function (game) {
+var getBestMove = function (game, depth) {
     if (game.game_over()) {
         alert('Game over');
     }
 
     positionCount = 0;
-    var depth = parseInt($('#search-depth').find(':selected').text());
+    //var depth = parseInt($('#search-depth').find(':selected').text());
 
     var d = new Date().getTime();
     var bestMove = minimaxRoot(depth, game, true);
@@ -255,7 +264,7 @@ var onDrop = function (source, target) {
     // }
 
     renderMoveHistory(game.history());
-    window.setTimeout(playerTwoMove, 1000);
+    window.setTimeout(blackMove, 1000);
 };
 
 var onSnapEnd = function () {
