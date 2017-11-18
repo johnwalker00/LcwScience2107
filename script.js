@@ -264,19 +264,30 @@ var getCaptureMoves = function (possibleMoves){
 */
 
 //function getCaptureMoves
-//declare the capture moves array
-//loop over all the moves
-//get a single move from all moves using the index
-//if the move is captured
-//add the move to the capture moves array
+var getCaptureMoves = function (possibleMoves) {
+    //declare the capture moves array
+    var captureMoves = [];
+    //loop over all the moves
+    var i = 0;
+    while (i < possibleMoves.length) {
+        //get a single move from all moves using the index
+        var move = possibleMoves[i];
+        //if the move is captured
+        if (move.captured) {
+            //add the move to the capture moves array
+            captureMoves.push(move);
+        }
+        i++;
+    }
+    return captureMoves;
+};
 
 
 /**
 var randomCapture = function(game){
     //get moves
-    var possibleMoves = game.ugly_moves();
+    var captureMoves = getCaptureMoves(game.ugly_moves());
     var nextMove;
-    var captureMoves = getCaptureMoves(possibleMoves);
 
     //If we didn't find a move, get a random one
     if(captureMoves.length === 0){
@@ -291,6 +302,23 @@ var randomCapture = function(game){
     return nextMove;
 };
 */
+
+//fucntion randomCapture
+var randomCapture = function (game){ 
+    //get all the capturemoves
+    var captureMoves = getCaptureMoves(game.ugly_moves());
+    //declare nextmove
+    var nextMove;
+    //if there are capturemoves, get  a random one
+    if (captureMoves.length > 0) {
+        nextMove = getRandomMove(captureMoves);
+    } else {
+        //else get any random move from the game
+        nextMove = randomMove(game);
+    }
+    //return nextmove
+    return nextMove;
+};
 
 var positionCount;
 var getBestMove = function (game, depth, findBestMove) {
