@@ -1,6 +1,6 @@
 var board,
     game = new Chess(), 
-    whiteDepth = 3, 
+    whiteDepth = 1, 
     blackDepth = 1;
 
 /*The "AI" part starts here */
@@ -189,7 +189,7 @@ var onDragStart = function (source, piece, position, orientation) {
     }
 };
 var checkmate = function(game) {
-    if(game.in_checkmate())
+    if(game.ugly_moves().length === 0)
     { 
         log('checkmate');
         return 'checkmate';
@@ -201,6 +201,7 @@ var checkmate = function(game) {
 var whiteMove = function () {
     //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
     var bestMove = randomMove(game);
+    //var bestMove = randomCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
@@ -212,8 +213,8 @@ var whiteMove = function () {
 };
 
 var blackMove = function () {
-    //var bestMove = getBestMove(game, blackDepth, minimaxRoot);
-    var bestMove = randomMove(game);
+    var bestMove = getBestMove(game, blackDepth, minimaxRoot);
+    //var bestMove = randomMove(game);
     //var bestMove = randomCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
@@ -225,10 +226,15 @@ var blackMove = function () {
     window.setTimeout(whiteMove, 5);
 };
 
-var randomMove =function(game) {
-    //generate all the moves for a given position
-    var newGameMoves = game.ugly_moves();
-    return newGameMoves[Math.floor(Math.random() * newGameMoves.length)];
+var randomMove = function(game) {
+    //get moves
+    var turnPossibleMoves = game.ugly_moves();
+    //get random index
+    var turnRandomIndex = Math.floor(Math.random() * turnPossibleMoves.length);
+    //get move from moves
+    var randomMoove = turnPossibleMoves[turnRandomIndex];
+    //return move
+    return randomMoove;
 };
 
 var randomCapture = function(game){
