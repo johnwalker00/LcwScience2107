@@ -200,8 +200,8 @@ var checkmate = function(game) {
 };
 var whiteMove = function () {
     //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
-    var bestMove = randomMove(game);
-    //var bestMove = randomCapture(game);
+    //var bestMove = randomMove(game);
+    var bestMove = randomCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
@@ -213,9 +213,9 @@ var whiteMove = function () {
 };
 
 var blackMove = function () {
-    var bestMove = getBestMove(game, blackDepth, minimaxRoot);
+    //var bestMove = getBestMove(game, blackDepth, minimaxRoot);
     //var bestMove = randomMove(game);
-    //var bestMove = randomCapture(game);
+    var bestMove = randomCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
@@ -226,51 +226,71 @@ var blackMove = function () {
     window.setTimeout(whiteMove, 5);
 };
 
-var randomMove = function(game) {
-    //get moves
-    var turnPossibleMoves = game.ugly_moves();
+var getRandomMove = function(moves){
     //get random index
-    var turnRandomIndex = Math.floor(Math.random() * turnPossibleMoves.length);
+    var turnRandomIndex = Math.floor(Math.random() * moves.length);
     //get move from moves
-    var randomMoove = turnPossibleMoves[turnRandomIndex];
+    var randomMoove = moves[turnRandomIndex];
     //return move
     return randomMoove;
 };
 
-var randomCapture = function(game){
-    var possibleMoves = game.ugly_moves();
-    //var nextMove = possibleMoves[0]; 
-    var nextMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-    for(var i = 0; i < possibleMoves.length; i++) {
-        var move = possibleMoves[i];
-        var numPieces = countPieces(game.board());
-
-        game.ugly_move(move);
-        if(numPieces > countPieces(game.board()))
-        {
-            nextMove = move;
-        }
-        game.undo();
-    }
-    return nextMove;
+var randomMove = function(game) {
+    //get moves
+    var turnPossibleMoves = game.ugly_moves();
+    //get random move
+    var randomMoove = getRandomMove(turnPossibleMoves);
+    //return move
+    return randomMoove;
 };
 
-var countPieces = function(board){
-    if(board === null){
-        return 0
-    }
-    var pieces = 0;
-
-    for (var i = 0; i < 8; i++) {
-        for (var j = 0; j < 8; j++) {
-            if(board[i][j] !== null)
-            {
-                pieces++;
-            }
+/**
+var getCaptureMoves = function (possibleMoves){
+    var captureMoves = [];
+    
+    //Look at all the moves, if one of them is a Capture, we'll use that one instead
+    //Loop over all moves
+    for(var i = 0; i < possibleMoves.length; i++) {
+        //Get the move
+        var move = possibleMoves[i];
+        //If the move is a capture, we want that one
+        if(move.captured){
+            //We found a capture move
+            captureMoves.push(move);
         }
     }
-    return pieces;
-}
+    return captureMoves;    
+};
+*/
+
+//function getCaptureMoves
+//declare the capture moves array
+//loop over all the moves
+//get a single move from all moves using the index
+//if the move is captured
+//add the move to the capture moves array
+
+
+/**
+var randomCapture = function(game){
+    //get moves
+    var possibleMoves = game.ugly_moves();
+    var nextMove;
+    var captureMoves = getCaptureMoves(possibleMoves);
+
+    //If we didn't find a move, get a random one
+    if(captureMoves.length === 0){
+        //get random move. This is what we will return if we can't capture anything
+        nextMove = randomMove(game);
+    }else
+    {
+        nextMove = getRandomMove(captureMoves);
+    }
+
+    //return move
+    return nextMove;
+};
+*/
 
 var positionCount;
 var getBestMove = function (game, depth, findBestMove) {
