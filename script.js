@@ -214,8 +214,8 @@ var whiteMove = function () {
 
 var blackMove = function () {
     //var bestMove = getBestMove(game, blackDepth, minimaxRoot);
-    //var bestMove = randomMove(game);
-    var bestMove = randomCapture(game);
+    var bestMove = randomMove(game);
+    //var bestMove = randomCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
@@ -235,6 +235,10 @@ var getRandomMove = function(moves){
     return randomMoove;
 };
 
+/**
+ * RANDOMMOVE AI
+ * @param {*} game 
+ */
 var randomMove = function(game) {
     //get moves
     var turnPossibleMoves = game.ugly_moves();
@@ -244,26 +248,11 @@ var randomMove = function(game) {
     return randomMoove;
 };
 
-/**
-var getCaptureMoves = function (possibleMoves){
-    var captureMoves = [];
-    
-    //Look at all the moves, if one of them is a Capture, we'll use that one instead
-    //Loop over all moves
-    for(var i = 0; i < possibleMoves.length; i++) {
-        //Get the move
-        var move = possibleMoves[i];
-        //If the move is a capture, we want that one
-        if(move.captured){
-            //We found a capture move
-            captureMoves.push(move);
-        }
-    }
-    return captureMoves;    
-};
-*/
 
-//function getCaptureMoves
+/**
+ * RANDOMCAPTURE AI
+ * @param {*} possibleMoves 
+ */
 var getCaptureMoves = function (possibleMoves) {
     //declare the capture moves array
     var captureMoves = [];
@@ -282,28 +271,6 @@ var getCaptureMoves = function (possibleMoves) {
     return captureMoves;
 };
 
-
-/**
-var randomCapture = function(game){
-    //get moves
-    var captureMoves = getCaptureMoves(game.ugly_moves());
-    var nextMove;
-
-    //If we didn't find a move, get a random one
-    if(captureMoves.length === 0){
-        //get random move. This is what we will return if we can't capture anything
-        nextMove = randomMove(game);
-    }else
-    {
-        nextMove = getRandomMove(captureMoves);
-    }
-
-    //return move
-    return nextMove;
-};
-*/
-
-//fucntion randomCapture
 var randomCapture = function (game){ 
     //get all the capturemoves
     var captureMoves = getCaptureMoves(game.ugly_moves());
