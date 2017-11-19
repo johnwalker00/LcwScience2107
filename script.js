@@ -201,7 +201,8 @@ var checkmate = function(game) {
 var whiteMove = function () {
     //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
     //var bestMove = randomMove(game);
-    var bestMove = randomCapture(game);
+    //var bestMove = randomCapture(game);
+    var bestMove = bestCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
@@ -216,6 +217,7 @@ var blackMove = function () {
     //var bestMove = getBestMove(game, blackDepth, minimaxRoot);
     var bestMove = randomMove(game);
     //var bestMove = randomCapture(game);
+    //var bestMove = bestCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
@@ -286,7 +288,58 @@ var randomCapture = function (game){
     //return nextmove
     return nextMove;
 };
+/**
+ * BESTCAPTURE AI
+ * @param {*} game 
+ */
+var bestCapture = function (game) {
+    //get all the capture moves
+    var captureMoves = getCaptureMoves(game.ugly_moves());
+    //declare move var
+    var theMove;
 
+    //If there are no capture moves, then make a random move
+    if (captureMoves.length === 0) {
+        theMove = randomMove(game);
+    } else {
+        //if there are capture moves, select the most valuable piece
+        
+        //first, get the first capture move
+        theMove = captureMoves[0];
+
+        //loop over all the capture moves comparing the one we have to the next one
+        for (i = 0; i < captureMoves.length; i++) {
+            //compare the captured piece to the next move's captured piece.
+            var theOtherMove = captureMoves[i];
+            //choose the move with the best captured piece
+            //if the captured piece is a king, do it
+            if (theMove.captured === 'k') {
+                break;
+            }
+            //if there are no captures that result in a king, search for a queen
+            else if(theMove.captured === 'q' && 'k'.search(theOtherMove.captured) > -1){
+                theMove = theOtherMove;
+            }
+            //if there are no queen captures, find a rook
+            else if(theMove.captured === 'r' && 'kq'.search(theOtherMove.captured) > -1){
+                theMove = theOtherMove;
+            }
+            //if there are no rooks to capture, find a knight
+            else if(theMove.captured === 'n' && 'kqr'.search(theOtherMove.captured) > -1){
+                theMove = theOtherMove;
+            }
+            //if there are no knights, find a pawn
+            else if(theMove.captured === 'b' && 'kqrn'.search(theOtherMove.captured) > -1){
+                theMove = theOtherMove;
+            }
+            //if you've gotten this far, there has to be a pawn.
+            else if(theMove.captured === 'p' && 'kqrnb'.search(theOtherMove.captured) > -1){
+                theMove = theOtherMove;
+            }
+        }
+    }
+    return theMove;
+};
 var positionCount;
 var getBestMove = function (game, depth, findBestMove) {
     if (game.game_over()) {
