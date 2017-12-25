@@ -6,10 +6,6 @@ var board,
 /*The "AI" part starts here */
 
 
-
-
-
-
 /* board visualization and games state handling */
 
 var onDragStart = function (source, piece, position, orientation) {
@@ -31,11 +27,19 @@ var checkmate = function(game) {
 var whiteMove = function () {
     //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
     //var bestMove = randomMove(game);
-    //var bestMove = randomCapture(game);
-    var bestMove = bestCapture(game);
+    var bestMove = randomCapture(game);
+    //var bestMove = bestCapture(game);
+    //var bestMove = avoidBeingCaptured(game);
+
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
+
+
+
+
+
+    
     if (game.game_over()) {
         alert('Game over ['+checkmate(game)+']');
         return;
@@ -45,9 +49,9 @@ var whiteMove = function () {
 
 var blackMove = function () {
     //var bestMove = getBestMove(game, blackDepth, minimaxRoot);
-    var bestMove = randomMove(game);
+    //var bestMove = randomMove(game);
     //var bestMove = randomCapture(game);
-    //var bestMove = bestCapture(game);
+    var bestMove = bestCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
@@ -61,7 +65,7 @@ var blackMove = function () {
 var getRandomMove = function(moves){
     //get random index
     var turnRandomIndex = Math.floor(Math.random() * moves.length);
-    //get move from moves
+    //get move from random index
     var randomMoove = moves[turnRandomIndex];
     //return move
     return randomMoove;
@@ -170,6 +174,75 @@ var bestCapture = function (game) {
     }
     return theMove;
 };
+
+var resultsInCapture = function(theMove){
+    game.ugly_move(theMove);
+    var foundCapture = (getCaptureMoves(game.ugly_moves()).length > 0);
+    game.undo();
+    return foundCapture;
+};
+
+/**
+ * AVOIDBEINGCAPTURED AI
+ * @param {*} game 
+ */
+var avoidBeingCaptured = function (game) {
+    //get all the capture moves
+    var captureMoves = getCaptureMoves(game.ugly_moves());
+    //declare move var
+    var theMove;
+
+    //If there are no capture moves, then make a random move
+    if (captureMoves.length === 0) {
+        theMove = randomMove(game);
+        if(resultsInCapture(theMove))
+        {
+            theMove = randomMove(game);
+        }
+    } else {
+        //if there are capture moves, select the most valuable piece
+        
+        //first, get the first capture move
+        theMove = captureMoves[0];
+
+        //loop over all the capture moves comparing the one we have to the next one
+        for (i = 0; i < captureMoves.length; i++) {
+            //compare the captured piece to the next move's captured piece.
+            var theOtherMove = captureMoves[i];
+            //choose the move with the best captured piece
+            //if the captured piece is a king, do it
+            if (theMove.captured === 'k') {
+                break;
+            }
+            //if there are no captures that result in a king, search for a queen
+            else if(theMove.captured === 'q' && 'k'.search(theOtherMove.captured) > -1){
+                theMove = theOtherMove;
+            }
+            //if there are no queen captures, find a rook
+            else if(theMove.captured === 'r' 
+                && 'kq'.search(theOtherMove.captured) > -1){
+                theMove = theOtherMove;
+            }
+            //if there are no rooks to capture, find a knight
+            else if(theMove.captured === 'n' 
+                && 'kqr'.search(theOtherMove.captured) > -1){
+                theMove = theOtherMove;
+            }
+            //if there are no knights, find a pawn
+            else if(theMove.captured === 'b' 
+                && 'kqrn'.search(theOtherMove.captured) > -1){
+                theMove = theOtherMove;
+            }
+            //if you've gotten this far, there has to be a pawn.
+            else if(theMove.captured === 'p' 
+                && 'kqrnb'.search(theOtherMove.captured) > -1){
+                theMove = theOtherMove;
+            }
+        }
+    }
+    return theMove;
+};
+
 var positionCount;
 var getBestMove = function (game, depth, findBestMove) {
     if (game.game_over()) {
