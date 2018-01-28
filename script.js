@@ -36,9 +36,9 @@ var movingnow = '';
 var whiteMove = function () {
     movingnow = 'white';
     //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
-    //var bestMove = randomMove(game);
+    var bestMove = randomMove(game);
     //var bestMove = randomCapture(game);
-    var bestMove = bestCapture(game);
+    //var bestMove = bestCapture(game);
     //var bestMove = avoidBeingCaptured(game);
 
     game.ugly_move(bestMove);
@@ -321,7 +321,7 @@ var stopGame = function () {
     blackCheckmate = blackCheckmate ? blackCheckmate : 0;
     var stalemate = parseInt(localStorage.getItem('stalemate'));
     stalemate = stalemate ? stalemate : 0;
-    if (whiteCheckmate + blackCheckmate + stalemate >= 100) {
+    if (whiteCheckmate + blackCheckmate + stalemate >= 1003) {
         var result = "white checkmate: "+ whiteCheckmate + "," + " black checkmate: "+blackCheckmate + "," + " stalemate: "+stalemate;
         //log the results
         log(result);
