@@ -62,11 +62,11 @@ var whiteMove = function () {
 var blackMove = function () {
     movingnow = 'black';
     //var bestMove = getBestMove(game, blackDepth, minimaxRoot);
-    //var bestMove = randomMove(game);
-    var bestMove = randomCapture(game);
+    var bestMove = randomMove(game);
+    //var bestMove = randomCapture(game);
     //var bestMove = bestCapture(game);
     game.ugly_move(bestMove);
-    board.position(game.fen());
+    board.position(game);
     renderMoveHistory(game.history());
     if (game.game_over()) {
       //  alert('Game over ['+checkmate(game)+']');
