@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "file:///home/johnwalker00/Repos/LcwScience2107/index.html",
+            "url": "http://localhost/chess/index.html",
             "webRoot": "${workspaceRoot}"
         }
     ]

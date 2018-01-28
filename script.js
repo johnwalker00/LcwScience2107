@@ -17,18 +17,28 @@ var onDragStart = function (source, piece, position, orientation) {
 var checkmate = function(game) {
     if(game.ugly_moves().length === 0)
     { 
-        log('checkmate');
-        return 'checkmate';
+        var winner = movingnow + 'Checkmate';
+        
+        var checkmateCount = localStorage.getItem(winner)
+        localStorage.setItem(winner, ++checkmateCount);
+        log(winner);
+        return winner;
     }else{
+        var checkmateCount = localStorage.getItem('stalemate')
+        localStorage.setItem('stalemate', ++checkmateCount);
         log('stalemate');
         return 'stalemate';
     }
 };
+
+var movingnow = '';
+
 var whiteMove = function () {
+    movingnow = 'white';
     //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
     //var bestMove = randomMove(game);
-    var bestMove = randomCapture(game);
-    //var bestMove = bestCapture(game);
+    //var bestMove = randomCapture(game);
+    var bestMove = bestCapture(game);
     //var bestMove = avoidBeingCaptured(game);
 
     game.ugly_move(bestMove);
@@ -41,23 +51,28 @@ var whiteMove = function () {
 
     
     if (game.game_over()) {
-        alert('Game over ['+checkmate(game)+']');
+        //alert('Game over ['+checkmate(game)+']');
+        checkmate(game);
+        stopGame();
         return;
     }
     window.setTimeout(blackMove, 5);
 };
 
 var blackMove = function () {
+    movingnow = 'black';
     //var bestMove = getBestMove(game, blackDepth, minimaxRoot);
-    //var bestMove = randomMove(game);
+    var bestMove = randomMove(game);
     //var bestMove = randomCapture(game);
-    var bestMove = bestCapture(game);
+    //var bestMove = bestCapture(game);
     game.ugly_move(bestMove);
     board.position(game.fen());
     renderMoveHistory(game.history());
     if (game.game_over()) {
-        alert('Game over ['+checkmate(game)+']');
-        return;
+      //  alert('Game over ['+checkmate(game)+']');
+      checkmate(game);
+      stopGame();  
+      return;
     }
     window.setTimeout(whiteMove, 5);
 };
@@ -246,7 +261,7 @@ var avoidBeingCaptured = function (game) {
 var positionCount;
 var getBestMove = function (game, depth, findBestMove) {
     if (game.game_over()) {
-        alert('Game over');
+        //alert('Game over');
         return;
     }
 
@@ -288,14 +303,31 @@ var onDrop = function (source, target) {
     //     to: target,
     //     promotion: 'q'
     // });
-
+    startGame();
+};
+var startGame = function() {
     removeGreySquares();
     // if (move === null) {
     //     return 'snapback';
     // }
 
     renderMoveHistory(game.history());
-    window.setTimeout(blackMove, 1000);
+    window.setTimeout(whiteMove, 1000);
+};
+var stopGame = function () {
+    var whiteCheckmate = parseInt(localStorage.getItem('whiteCheckmate'));
+    var blackCheckmate = parseInt(localStorage.getItem('blackCheckmate'));
+    var stalemate = parseInt(localStorage.getItem('stalemate'));
+    if (whiteCheckmate + blackCheckmate + stalemate >= 50) {
+        var result = "white checkmate: black checkmate: stalemate: ";
+        //log the results
+        log(result);
+        //alert the results
+        alert(result);
+    }else{
+        //automatically reload here
+        location.reload();
+    }
 };
 
 var onSnapEnd = function () {
@@ -346,3 +378,5 @@ var cfg = {
     onSnapEnd: onSnapEnd
 };
 board = ChessBoard('board', cfg);
+
+startGame();
