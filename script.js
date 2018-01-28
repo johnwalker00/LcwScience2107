@@ -316,14 +316,20 @@ var startGame = function() {
 };
 var stopGame = function () {
     var whiteCheckmate = parseInt(localStorage.getItem('whiteCheckmate'));
+    whiteCheckmate = whiteCheckmate ? whiteCheckmate : 0;
     var blackCheckmate = parseInt(localStorage.getItem('blackCheckmate'));
+    blackCheckmate = blackCheckmate ? blackCheckmate : 0;
     var stalemate = parseInt(localStorage.getItem('stalemate'));
-    if (whiteCheckmate + blackCheckmate + stalemate >= 50) {
-        var result = "white checkmate: black checkmate: stalemate: ";
+    stalemate = stalemate ? stalemate : 0;
+    if (whiteCheckmate + blackCheckmate + stalemate >= 100) {
+        var result = "white checkmate: "+ whiteCheckmate + "," + " black checkmate: "+blackCheckmate + "," + " stalemate: "+stalemate;
         //log the results
         log(result);
         //alert the results
         alert(result);
+        localStorage.removeItem('whiteCheckmate');
+        localStorage.removeItem('blackCheckmate');
+        localStorage.removeItem('stalemate');
     }else{
         //automatically reload here
         location.reload();
