@@ -36,8 +36,8 @@ var movingnow = '';
 var whiteMove = function () {
     movingnow = 'white';
     //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
-    var bestMove = randomMove(game);
-    //var bestMove = randomCapture(game);
+    //var bestMove = randomMove(game);
+    var bestMove = randomCapture(game);
     //var bestMove = bestCapture(game);
     //var bestMove = avoidBeingCaptured(game);
 
