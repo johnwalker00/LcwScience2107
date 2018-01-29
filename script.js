@@ -37,8 +37,8 @@ var whiteMove = function () {
     movingnow = 'white';
     //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
     //var bestMove = randomMove(game);
-    var bestMove = randomCapture(game);
-    //var bestMove = bestCapture(game);
+    //var bestMove = randomCapture(game);
+    var bestMove = bestCapture(game);
     //var bestMove = avoidBeingCaptured(game);
 
     game.ugly_move(bestMove);
@@ -63,8 +63,8 @@ var blackMove = function () {
     movingnow = 'black';
     //var bestMove = getBestMove(game, blackDepth, minimaxRoot);
     //var bestMove = randomMove(game);
-    var bestMove = randomCapture(game);
-    //var bestMove = bestCapture(game);
+    //var bestMove = randomCapture(game);
+    var bestMove = bestCapture(game);
     game.ugly_move(bestMove);
     board.position(game);
     renderMoveHistory(game.history());
