@@ -36,8 +36,8 @@ var movingnow = '';
 var whiteMove = function () {
     movingnow = 'white';
     //var bestMove = getBestMove(game, whiteDepth, minimaxRootWhite);
-    var bestMove = randomMove(game);
-    //var bestMove = randomCapture(game);
+    //var bestMove = randomMove(game);
+    var bestMove = randomCapture(game);
     //var bestMove = bestCapture(game);
     //var bestMove = avoidBeingCaptured(game);
 
@@ -56,7 +56,7 @@ var whiteMove = function () {
         stopGame();
         return;
     }
-    window.setTimeout(blackMove, 5);
+    window.setTimeout(blackMove, 2);
 };
 
 var blackMove = function () {
@@ -74,7 +74,7 @@ var blackMove = function () {
       stopGame();  
       return;
     }
-    window.setTimeout(whiteMove, 5);
+    window.setTimeout(whiteMove, 2);
 };
 
 var getRandomMove = function(moves){
