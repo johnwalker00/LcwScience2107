@@ -321,7 +321,7 @@ var stopGame = function () {
     blackCheckmate = blackCheckmate ? blackCheckmate : 0;
     var stalemate = parseInt(localStorage.getItem('stalemate'));
     stalemate = stalemate ? stalemate : 0;
-    if (whiteCheckmate + blackCheckmate + stalemate >= 100) {
+    if (whiteCheckmate + blackCheckmate + stalemate >= 10000) {
         var result = " black checkmate: "+blackCheckmate + ", " + " white checkmate: "+ whiteCheckmate + "," + " stalemate: "+stalemate;
         //log the results
         log(result);
